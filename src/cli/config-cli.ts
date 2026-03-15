@@ -473,4 +473,25 @@ export function registerConfigCli(program: Command) {
     .action(async (opts) => {
       await runConfigValidate({ json: Boolean(opts.json) });
     });
+
+  const presetCmd = cmd
+    .command("preset")
+    .description("Apply a named configuration preset (e.g. gemini-light)");
+
+  presetCmd
+    .command("list")
+    .description("List available configuration presets")
+    .action(async () => {
+      const { runConfigPresetList } = await import("../commands/config-preset.js");
+      await runConfigPresetList();
+    });
+
+  presetCmd
+    .command("apply")
+    .description("Apply a configuration preset")
+    .argument("<id>", "Preset identifier (see `config preset list`)")
+    .action(async (id: string) => {
+      const { runConfigPresetApply } = await import("../commands/config-preset.js");
+      await runConfigPresetApply({ presetId: id });
+    });
 }
